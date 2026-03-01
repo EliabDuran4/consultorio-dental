@@ -5,12 +5,13 @@ const app = express();
 app.use(express.json());
 app.use(express.static('public'));
 // Configuración conexión PostgreSQL
+const { Pool } = require("pg");
+
 const pool = new Pool({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'consultorio_dental',
-    password: 'postgres',
-    port: 5432,
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
 // Ruta de prueba
