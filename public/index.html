@@ -49,6 +49,8 @@ document.getElementById('formCita').addEventListener('submit', async (e) => {
     cargarCitas();
 });
 
+
+
 async function cargarCitas() {
     const res = await fetch('/citas');
     const citas = await res.json();
@@ -81,7 +83,19 @@ document.getElementById('formPaciente').addEventListener('submit', async (e) => 
     cargarPacientes();
 });
 
+async function cargarPacientes() {
+    const res = await fetch('/pacientes');
+    const pacientes = await res.json();
 
+    const lista = document.getElementById('listaPacientes');
+    lista.innerHTML = '';
+
+    pacientes.forEach(p => {
+        const li = document.createElement('li');
+        li.textContent = `${p.id} - ${p.nombre} - ${p.telefono} - ${p.email}`;
+        lista.appendChild(li);
+    });
+}
 
 cargarPacientes();
 </script>
