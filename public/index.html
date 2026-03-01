@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Consultorio Dental</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Registro de Pacientes</h1>
+
+    <form id="formPaciente">
+        <input type="text" id="nombre" placeholder="Nombre" required>
+        <input type="text" id="telefono" placeholder="Teléfono">
+        <input type="email" id="email" placeholder="Email">
+        <button type="submit">Registrar</button>
+    </form>
+
+    <h2>Lista de Pacientes</h2>
+    <ul id="listaPacientes"></ul>
+
+    <h1>Registrar Cita</h1>
+
+<form id="formCita">
+    <input type="number" id="paciente_id" placeholder="ID del Paciente" required>
+    <input type="date" id="fecha" required>
+    <input type="time" id="hora" required>
+    <input type="text" id="motivo" placeholder="Motivo">
+    <button type="submit">Agendar Cita</button>
+</form>
+
+<h2>Lista de Citas</h2>
+<ul id="listaCitas"></ul>
+
+<script>
+
+document.getElementById('formCita').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const paciente_id = document.getElementById('paciente_id').value;
+    const fecha = document.getElementById('fecha').value;
+    const hora = document.getElementById('hora').value;
+    const motivo = document.getElementById('motivo').value;
+
+    await fetch('/citas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ paciente_id, fecha, hora, motivo })
+    });
+
+    cargarCitas();
+});
+
+async function cargarCitas() {
+    const res = await fetch('/citas');
+    const citas = await res.json();
+
+    const lista = document.getElementById('listaCitas');
+    lista.innerHTML = '';
+
+    citas.forEach(c => {
+        const li = document.createElement('li');
+        li.textContent = `${c.nombre} - ${c.fecha} ${c.hora} - ${c.motivo} (${c.estado})`;
+        lista.appendChild(li);
+    });
+}
+
+cargarCitas();
+    
+document.getElementById('formPaciente').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const nombre = document.getElementById('nombre').value;
+    const telefono = document.getElementById('telefono').value;
+    const email = document.getElementById('email').value;
+
+    await fetch('/pacientes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nombre, telefono, email })
+    });
+
+    cargarPacientes();
+});
+
+
+
+cargarPacientes();
+</script>
+
+</body>
+</html>
